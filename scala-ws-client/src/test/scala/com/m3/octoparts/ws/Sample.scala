@@ -4,6 +4,7 @@ import java.util.UUID
 
 import com.m3.octoparts.model._
 import play.api.libs.json.Json
+import play.api.libs.ws.WSClient
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -24,6 +25,15 @@ object Sample {
 
   // Add some implicits to make the response easier to work with
   import AggregateResponseEnrichment._
+
+  implicit val client: WSClient = {
+    import play.api.libs.ws.DefaultWSClientConfig
+    import play.api.libs.ws.ning.NingAsyncHttpClientConfigBuilder
+    import play.api.libs.ws.ning.NingWSClient
+
+    val config = new NingAsyncHttpClientConfigBuilder(DefaultWSClientConfig()).build()
+    new NingWSClient(config)
+  }
 
   // Create a client
   val octoClient = new OctoClient("http://octoparts/", httpRequestTimeout = 1.second)

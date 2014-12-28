@@ -22,9 +22,9 @@ import com.m3.octoparts.json.format.ConfigModel._
  *
  * Has a rescuer method that tries its best to recover from all reasonable errors.
  */
-class OctoClient(val baseUrl: String, protected val httpRequestTimeout: Duration)(implicit val octoPlayApp: Application) extends OctoClientLike {
+class OctoClient(val baseUrl: String, protected val httpRequestTimeout: Duration)(implicit val client: WSClient) extends OctoClientLike {
 
-  protected def wsHolderFor(url: String) = WS.url(url).withRequestTimeout(httpRequestTimeout.toMillis.toInt)
+  protected def wsHolderFor(url: String) = client.url(url).withRequestTimeout(httpRequestTimeout.toMillis.toInt)
 
   protected def rescuer[A](defaultReturn: => A): PartialFunction[Throwable, A] = {
     case JsResultException(e) => {
